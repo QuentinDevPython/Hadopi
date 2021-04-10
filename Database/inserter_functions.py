@@ -1,30 +1,109 @@
-from Database.create_tables import Personne, Appareil, Habitation, Question, Q1_Type_de_question, Q2_Mode_de_consommation, Q3_Lieu_ecoute_musique, Q4_Facon_de_consommer_musique, Q5_Type_de_musique
+import Database.create_tables
 
 class Inserter_functions:
 
-	def __init__(self):
-		self.Personne = Personne
-		self.Appareil = Appareil
-		self.Habitation = Habitation
-		self.Question = Question
-		self.Q1_Type_de_question = Q1_Type_de_question
-		self.Q2_Mode_de_consommation = Q2_Mode_de_consommation
-		self.Q3_Lieu_ecoute_musique = Q3_Lieu_ecoute_musique
-		self.Q4_Facon_de_consommer_musique = Q4_Facon_de_consommer_musique
-		self.Q5_Type_de_musique = Q5_Type_de_musique
 
-	def insert_Personne(self, row_data):
-		self.Personne.get_or_create(
-			sexe=row_data[0], 
-			tranche_age=row_data[1], 
-			statut_social=row_data[2]
+	def insert_Region(self, data, Region):
+		Region.get_or_create(
+			nom_region = data[6]
 		) 
-	def insert_Appareil(self, item, row_data):
-		self.Appareil.get_or_create(
-			type_appareil=item,
-			frequence_utilisation_internet = row_data[4]
-		)
-	#def insert_Utilise(self, row_data):
-	#	self.Utilise.get_or_create(
 
-	#	)
+	def insert_Ville(self, data, Ville, Region):
+		Ville.get_or_create(
+			nb_habitants_ville = data[5],
+			id_region = Region.get(Region.nom_region == data[6])
+		)
+
+	def insert_Foyer(self, data, Foyer, Ville, Region):
+		Foyer.get_or_create(
+			nb_personnes_foyer = data[3],
+			nb_enfants_foyer = data[4],
+			id_ville = Ville.select(
+				Ville.id_ville).where(
+					Ville.nb_habitants_ville == data[5] 
+					and Ville.id_region == Region.select(
+						Region.id_region).where(
+							Region.nom_region == data[6])).get()
+		)
+
+	def insert_Musique(self, data, Musique):
+		data_dict = data[7].split(',')
+		for item in data_dict:
+			if item != '':
+				Musique.get_or_create(
+					style_de_musique = item
+				)
+
+	def insert_Consommation(self, data, Consommation):
+		Consommation.get_or_create(
+			ecoute_jours = data[9],
+			frequence_musique = data[10],
+			nb_concert = data[11],
+			appareil_plus_frequent = data[12],
+			frequence_seul = data[13],
+			frequence_conso_illegale = data[14],
+			frequence_accompagne = data[15]
+		)
+
+	def insert_Moment_d_écoute(self, data, Moment_d_écoute):
+		data_dict = data[8].split(',')
+		for item in data_dict:
+			if item != '':
+				Moment_d_écoute.get_or_create(
+					moment_d_ecoute = item
+				)
+
+	def insert_Plateforme(self, data, Plateforme):
+		data_dict = data[16].split(',')
+		for item in data_dict:
+			if item != '':
+				Plateforme.get_or_create(
+					plateforme = item
+				)
+
+	def insert_Personne(self, data, Personne, Consommation, Foyer):
+		Personne.create(
+			sexe = data[0],
+			tranche_age = data[1],
+			statut_social = data[2],
+			id_consommation = Consommation.get(
+				Consommation.ecoute_jours == data[9]
+				and Consommation.frequence_musique == data[10]
+				and Consommation.nb_concert == data[11]
+				and Consommation.appareil_plus_frequent == data[12]
+				and Consommation.frequence_seul == data[13]
+				and Consommation.frequence_conso_illegale == data[14]
+				and Consommation.frequence_accompagne == data[15]
+			),
+			id_foyer = Foyer.get(
+				Foyer.nb_personnes_foyer == data[3]
+				and Foyer.nb_enfants_foyer == data[4]
+			)
+		)
+
+	def insert_Ecoute(self, index, data, Ecoute, Personne, Musique):
+		data_dict = data[7].split(',')
+		for item in data_dict:
+			if item != '':
+				Ecoute.get_or_create(
+					id_personne = Personne.get(Personne.id_personne == index+1),
+					id_musique = Musique.get(Musique.style_de_musique == item)
+				)
+
+	def insert_Ecoute_habituellement(self, index, data, Ecoute_habituellement, Personne, Moment_d_écoute):
+		data_dict = data[8].split(',')
+		for item in data_dict:
+			if item != '':
+				Ecoute_habituellement.get_or_create(
+					id_personne = Personne.get(Personne.id_personne == index+1),
+					id_moment_d_ecoute = Moment_d_écoute.get(Moment_d_écoute.moment_d_ecoute == item)
+				)
+
+	def insert_Utilise(self, index, data, Utilise, Personne, Plateforme):
+		data_dict = data[16].split(',')
+		for item in data_dict:
+			if item != '':
+				Utilise.get_or_create(
+					id_personne = Personne.get(Personne.id_personne == index+1),
+					id_plateforme = Plateforme.get(Plateforme.plateforme == item)
+				)
