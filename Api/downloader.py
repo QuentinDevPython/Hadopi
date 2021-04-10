@@ -8,9 +8,9 @@ class Downloader:
 		self.data = list()
 
 	def download(self):
-		file = open("excel_hadopi.csv", "r")
+		file = open("excel_hadopi_BDD.csv", "r")
 		data_reader = csv.reader(file, delimiter = ",")
-		for row in tqdm(data_reader):
+		for row in data_reader:
 			self.data.append(row)
 		file.close()
 

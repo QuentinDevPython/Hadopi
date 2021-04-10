@@ -9,7 +9,7 @@ class Inserter:
 		self.inserter_functions = Inserter_functions()
 
 	def insert(self):
-		for row in tqdm(self.data):
+		for row in tqdm(range(len(self.data))):
 			self.inserter_functions.insert_Personne(row)
 			type_appareil = row[3].split(' / ')
 			for item in type_appareil:
