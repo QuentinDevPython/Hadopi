@@ -1,6 +1,4 @@
-import Database.sql_connector
-from Api.downloader import Downloader
-from Api.inserter import Inserter
+from Interface.interface import Interface
 from Database.create_tables import (
 	Region,
 	Ville,
@@ -16,11 +14,7 @@ from Database.create_tables import (
 )
 
 if __name__ == "__main__":
-	downloader = Downloader()
-	data = downloader.get_data()
-
-	inserter = Inserter(
-		data,
+	interface = Interface(
 		Region,
 		Ville,
 		Foyer,
@@ -33,5 +27,7 @@ if __name__ == "__main__":
 		Ecoute_habituellement,
 		Utilise
 	)
-	inserter.insert()
+	interface.choose_download()
+
+
 	

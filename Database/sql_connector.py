@@ -8,4 +8,5 @@ database = mysql.connector.connect(
 
 cur = database.cursor()
 
+cur.execute('DROP DATABASE IF EXISTS hadopi')
 cur.execute('CREATE DATABASE IF NOT EXISTS hadopi')
