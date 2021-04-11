@@ -18,12 +18,13 @@ class Inserter_functions:
 		Foyer.get_or_create(
 			nb_personnes_foyer = data[3],
 			nb_enfants_foyer = data[4],
-			id_ville = Ville.select(
-				Ville.id_ville).where(
-					Ville.nb_habitants_ville == data[5] 
-					and Ville.id_region == Region.select(
-						Region.id_region).where(
-							Region.nom_region == data[6])).get()
+			id_ville = Ville.select(Ville.id_ville).where(
+					(Ville.nb_habitants_ville == data[5])
+					& (Ville.id_region == Region.select(Region.id_region).where(
+							Region.nom_region == data[6]
+						)
+					)
+				).get()
 		)
 
 	def insert_Musique(self, data, Musique):
@@ -61,26 +62,32 @@ class Inserter_functions:
 					plateforme = item
 				)
 
-	def insert_Personne(self, data, Personne, Consommation, Foyer):
+	def insert_Personne(self, data, Personne, Consommation, Foyer, Ville, Region):
 		Personne.create(
 			sexe = data[0],
 			tranche_age = data[1],
 			statut_social = data[2],
-			id_consommation = Consommation.get(
-				Consommation.ecoute_jours == data[9]
-				and Consommation.frequence_musique == data[10]
-				and Consommation.nb_concert == data[11]
-				and Consommation.appareil_plus_frequent == data[12]
-				and Consommation.frequence_seul == data[13]
-				and Consommation.frequence_conso_illegale == data[14]
-				and Consommation.frequence_accompagne == data[15]
-			),
-			id_foyer = Foyer.get(
-				Foyer.nb_personnes_foyer == data[3]
-				and Foyer.nb_enfants_foyer == data[4]
-			)
+			id_consommation = Consommation.select(Consommation.id_consommation).where(
+				(Consommation.ecoute_jours == data[9])
+				& (Consommation.frequence_musique == data[10])
+				& (Consommation.nb_concert == data[11])
+				& (Consommation.appareil_plus_frequent == data[12])
+				& (Consommation.frequence_seul == data[13])
+				& (Consommation.frequence_conso_illegale == data[14])
+				& (Consommation.frequence_accompagne == data[15])
+				).get(),
+			id_foyer = Foyer.select(Foyer.id_foyer).where(
+					(Foyer.nb_personnes_foyer == data[3])
+					& (Foyer.nb_enfants_foyer == data[4])
+					& (Foyer.id_ville == Ville.select(Ville.id_ville).where(
+							(Ville.nb_habitants_ville == data[5])
+							& (Ville.id_region == Region.select(Region.id_region).where(
+								Region.nom_region == data[6]
+							))
+						)
+					)
+				).get()
 		)
-
 	def insert_Ecoute(self, index, data, Ecoute, Personne, Musique):
 		data_dict = data[7].split(',')
 		for item in data_dict:

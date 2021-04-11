@@ -20,7 +20,7 @@ class Interface:
 	def choose_download(self):
 		download = int(
 			input(
-				"Voulez-vous télécharger la base de donnée ?\n"
+				"\nVoulez-vous télécharger la base de donnée ?\n\n"
 				"1 - Oui\n"
 				"2 - Non\n \n"
 			))

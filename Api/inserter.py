@@ -29,7 +29,7 @@ class Inserter:
 			self.database_inserter.insert_Consommation(self.data[row], self.Consommation)
 			self.database_inserter.insert_Moment_d_écoute(self.data[row], self.Moment_d_écoute)
 			self.database_inserter.insert_Plateforme(self.data[row], self.Plateforme)
-			self.database_inserter.insert_Personne(self.data[row], self.Personne, self.Consommation, self.Foyer)
+			self.database_inserter.insert_Personne(self.data[row], self.Personne, self.Consommation, self.Foyer, self.Ville, self.Region)
 			self.database_inserter.insert_Ecoute(row, self.data[row], self.Ecoute, self.Personne, self.Musique)
 			self.database_inserter.insert_Ecoute_habituellement(row, self.data[row], self.Ecoute_habituellement, self.Personne, self.Moment_d_écoute)
 			self.database_inserter.insert_Utilise(row, self.data[row], self.Utilise, self.Personne, self.Plateforme)
